@@ -17,10 +17,9 @@ class ChirpController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
-    {
+    public function index() {
         return Inertia::render('Chirps/Index', [
-            'chirps' => Chirp::with('user:id,name')->latest()->get(),
+            'chirps' => Chirp::with(['user', 'comments.user'])->latest()->get(),
         ]);
     }
 
@@ -40,21 +39,23 @@ class ChirpController extends Controller
     {
         $validated = $request->validate([
             'message' => 'required|string|max:255',
+            'sendEmail' => 'boolean',
         ]);
 
         // Create the Chirp
         $chirp = $request->user()->chirps()->create($validated);
 
-        // Send an email notification to all users except the one who posted
-        $users = User::where('id', '!=', $request->user()->id)->get();
-
-        foreach ($users as $user) {
-            Mail::to($user->email)->send(new NewChirpNotification($chirp));
+        // Check if sendEmail is true
+        if ($request->boolean('sendEmail')) {
+            // Send an email notification to all users except the one who posted
+            $users = User::where('id', '!=', $request->user()->id)->get();
+            foreach ($users as $user) {
+                Mail::to($user->email)->send(new NewChirpNotification($chirp));
+            }
         }
 
         return redirect(route('chirps.index'));
     }
-
     /**
      * Display the specified resource.
      */

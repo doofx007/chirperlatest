@@ -2,7 +2,7 @@ export default function ApplicationLogoWhite(props) {
     return (
         <img
             {...props}
-            src="/images/logo-white.png" // Ensure this matches the correct path
+            src="/Images/logo-white.png" // Ensure this matches the correct path
             alt="Application Logo"
             style={{
                 width: '100%',       // Make the logo as large as the container

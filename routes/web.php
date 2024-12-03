@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,5 +33,9 @@ Route::resource('chirps', ChirpController::class)
 
 Route::get("auth/google", [GoogleController::class, "redirectToGoogle"])->name('redirect.google');
 Route::get("auth/google/callback", [GoogleController::class, "handleGoogleCallback"]);
+
+Route::post('/chirps/{chirp}/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
 require __DIR__.'/auth.php';
